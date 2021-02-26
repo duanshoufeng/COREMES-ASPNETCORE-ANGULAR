@@ -1,4 +1,7 @@
 <coremes-nav-menu></coremes-nav-menu>
 <div class="container">
   <router-outlet></router-outlet>
+  <ul>
+    <li *ngFor="let user of users">{{ user.id }} - {{ user.userName }}</li>
+  </ul>
 </div>

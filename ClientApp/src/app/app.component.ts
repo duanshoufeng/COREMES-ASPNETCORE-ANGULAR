@@ -6,6 +6,7 @@ import { Component, OnInit } from "@angular/core";
   templateUrl: "./app.component.html",
 })
 export class AppComponent implements OnInit {
+  title = "COREMES";
   users: any;
 
   constructor(private http: HttpClient) {}
@@ -24,6 +25,4 @@ export class AppComponent implements OnInit {
       }
     );
   }
-
-  title = "COREMES";
 }

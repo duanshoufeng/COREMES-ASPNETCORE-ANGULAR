@@ -8,6 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Core;
+using Core.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Extensions;
 
 namespace COREMES
 {
@@ -23,11 +29,10 @@ namespace COREMES
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplicationServices(_config);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddAutoMapper(typeof(Startup));
-            services.AddDbContext<CoreDbContext>(
-               options => options.UseSqlServer(_config.GetConnectionString("CoreDbContext")));
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             // In production, the Angular files will be served from this directory
@@ -35,7 +40,8 @@ namespace COREMES
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-            services.AddCors();
+            services.AddIdentityServices(_config);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,8 +67,7 @@ namespace COREMES
 
             app.UseRouting();
 
-            app.UseCors();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
